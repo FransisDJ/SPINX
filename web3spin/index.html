@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="screen-orientation" content="portrait" />
+    <title>SPINX</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <!-- 💥 Glitch Boom Effect -->
+    <div id="glitch-boom">
+        <div class="boom-text">💥 JACKPOT 💥</div>
+    </div>
+
+    <!-- 🦊 MetaMask Status -->
+    <p id="status">🔄 Checking MetaMask...</p>
+    <button id="connectButton">Connect MetaMask</button>
+
+    <!-- 🎮 MAIN LAYOUT -->
+    <div class="game-layout">
+
+        <!-- 🎡 WHEEL SECTION -->
+        <div class="wheel-section">
+            <div class="wheel-container">
+                <canvas id="wheel" width="400" height="400"></canvas>
+                <div class="wheel-title">SPINX</div>
+            </div>
+
+            <div id="winner-text"></div>
+
+            <div class="button-container">
+                <button id="spinButton">CLAIM YOUR FATE</button>
+            </div>
+        </div>
+
+        <!-- 🏆 LEADERBOARD SECTION -->
+        <div class="leaderboard">
+            <h3 data-text="🏆 Leaderboard">🏆 Leaderboard</h3>
+
+            <!-- 🥇 PODIUM -->
+            <div class="podium">
+                <div class="podium-place second">
+                    <div class="medal">🥈</div>
+                    <div class="name" id="podium-2">-</div>
+                    <div class="prize" id="prize-2">-</div>
+                </div>
+
+                <div class="podium-place first">
+                    <div class="medal">👑</div>
+                    <div class="name" id="podium-1">-</div>
+                    <div class="prize" id="prize-1">-</div>
+                </div>
+
+                <div class="podium-place third">
+                    <div class="medal">🥉</div>
+                    <div class="name" id="podium-3">-</div>
+                    <div class="prize" id="prize-3">-</div>
+                </div>
+            </div>
+
+            <!-- 🔽 LIVE FEED RANK 4+ -->
+            <ul id="leaderboard-list"></ul>
+        </div>
+    </div>
+
+    <!-- Duplicate? Keeping structure intact -->
+    <div id="winner-text"></div>
+
+    <!-- ⚡ Marquee -->
+    <div class="marquee">
+        <span>⚡ Press [1] Neon | [2] Dark Hacker | [3] Glitch Chaos — 🧠 A Secret Awaits... — Spin & Win!</span>
+    </div>
+
+    <!-- 🧠 Hack Mode Visuals -->
+    <canvas id="matrix-canvas"></canvas>
+    <div id="glitch-terminal"></div>
+
+    <!-- 📜 Terms Link -->
+    <p class="terms-link">
+        <a href="#" title="Lihat Terms of Use & Credits" onclick="startCredits(); return false;">📜 Terms of Use</a>
+    </p>
+
+    <!-- 📜 CREDIT SCROLL OVERLAY -->
+    <div id="creditOverlay" class="credit-overlay">
+
+        <!-- Close Button -->
+        <button id="creditCloseBtn" aria-label="Close Terms of Use">✖</button>
+
+        <div class="credit-content">
+            <div class="credit-block">✨ S P I N X &nbsp; P R O J E C T ✨</div>
+            <div class="credit-block">Created & Developed by:<br>🧠 Fransis</div>
+            <div class="credit-block">
+                Special Thanks:<br>
+                🌐 Open Web3 Community<br>
+                🤖 AI Assistants & Builders<br>
+                🪙 All Dreamers and Hackers
+            </div>
+
+            <div class="credit-block">1. Usage Rights<br>The “SPINX” project may be used for personal, commercial, or prize events, as long as the main structure is not modified without permission.</div>
+            <div class="credit-block">2. Prize Responsibility<br>All rewards are the responsibility of the event organizer, not the project creator.</div>
+            <div class="credit-block">3. No Financial Guarantee<br>This project provides no guarantee of real rewards or payments.</div>
+            <div class="credit-block">4. Limitation of Liability<br>The creator is not responsible for misuse or legal issues arising from this project.</div>
+            <div class="credit-block">5. Credit & License<br>Please credit “SPINX Project by Fransis” when used publicly.</div>
+            <div class="credit-block">6. Changes & Termination<br>The creator may update, withdraw, or restrict usage at any time.</div>
+            <div class="credit-block">🌟 Thank you for spinning your fate<br>🌀 The Wheel Decides — Fate Never Lies.</div>
+        </div>
+    </div>
+
+    <!-- ============================
+         📦 CORE SCRIPTS (ORDER IMPORTANT)
+         ============================ -->
+
+    <!-- Ethers.js -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <!-- Leaderboard / Podium (Load BEFORE main.js!) -->
+    <script src="js/leaderboard-podium.js"></script>
+
+    <!-- Core -->
+    <script src="js/main.js"></script>
+
+    <!-- Hack Mode -->
+    <script src="js/hackmode.js"></script>
+
+    <!-- Oracle -->
+    <script src="js/oracle.js"></script>
+
+    <!-- Terms -->
+    <script src="js/terms.js"></script>
+
+</body>
+</html>
