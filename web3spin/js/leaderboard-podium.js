@@ -1,9 +1,9 @@
 /* ============================================================
-   leaderboard-podium.js — SPINX Project
-   Premium Format — FIX: Removed duplicate leaderboardList var
+   leaderboard-podium.js — SPINX PROJECT (FINAL STABLE)
+   Podium Only — Live Feed (#4–#8) handled fully in main.js
 ============================================================ */
 
-/* Convert prize text → numerical value for ranking */
+/* Convert prize → numeric value (for sorting Top 3) */
 function parsePrizeValue(prize) {
     if (!prize) return 0;
 
@@ -14,87 +14,64 @@ function parsePrizeValue(prize) {
     return 0;
 }
 
-function addBubbleEntry(address, prize) {
-    const list = document.getElementById("leaderboard-list");
-    if (!list) return;
-
-    // Buat item baru
-    const li = document.createElement("li");
-    li.classList.add("bubble-item");
-
-    li.innerHTML = `
-        <span class="icon"></span>
-        <span class="address">${address.slice(0, 6)}...${address.slice(-4)}</span>
-        <span class="prize">${prize}</span>
-    `;
-
-    // Masukkan ke paling atas (rank #4)
-    list.prepend(li);
-
-    // Efek bubble
-    requestAnimationFrame(() => {
-        li.classList.add("show");
-    });
-
-    // Update penomoran rank
-    const items = list.querySelectorAll("li");
-    items.forEach((item, idx) => {
-        const num = idx + 4;        // mulai dari #4
-        item.querySelector(".icon").textContent = `#${num}`;
-    });
-}
-
-
 /* ============================================================
-   🥇 Render Podium Winners (Top 3)
+   🥇 RENDER PODIUM ONLY (Top 3)
 ============================================================ */
 function renderPodiumAndList(data) {
-    const sorted = data
+    if (!Array.isArray(data)) return;
+
+    // Filter dummy rows (“---”) agar podium tidak rusak
+    const cleanData = data.filter(d => d.address && d.address !== "---");
+
+    // Sort by value (descending)
+    const sorted = cleanData
         .slice()
         .sort((a, b) => parsePrizeValue(b.prize) - parsePrizeValue(a.prize));
 
-    const podium = [sorted[0], sorted[1], sorted[2]];
+    const podium = [
+        sorted[0] || null,
+        sorted[1] || null,
+        sorted[2] || null
+    ];
 
-    [1, 2, 3].forEach((slot, i) => {
-        const entry  = podium[i];
-        const nameEl = document.getElementById(`podium-${slot}`);
+    // Loop podium 1–3
+    [1, 2, 3].forEach((slot, index) => {
+        const entry = podium[index];
+        const nameEl  = document.getElementById(`podium-${slot}`);
         const prizeEl = document.getElementById(`prize-${slot}`);
 
-        const placeBox = nameEl?.parentElement?.parentElement;
+        if (!nameEl || !prizeEl) return;
+
+        const box = nameEl.parentElement.parentElement;
 
         if (entry) {
             const formatted = `${entry.address.slice(0, 6)}...${entry.address.slice(-4)}`;
 
+            // Glow anim kalau berubah
             if (nameEl.textContent !== formatted) {
-                placeBox.classList.add("glow");
-                setTimeout(() => placeBox.classList.remove("glow"), 1500);
+                box.classList.add("glow");
+                setTimeout(() => box.classList.remove("glow"), 1500);
             }
 
-            nameEl.textContent = formatted;
+            nameEl.textContent  = formatted;
             prizeEl.textContent = entry.prize;
         } else {
-            nameEl.textContent = "-";
+            nameEl.textContent  = "-";
             prizeEl.textContent = "-";
         }
     });
-
-    // Rank 4+ appended via addBubbleEntry only.
 }
 
 /* ============================================================
-   🚀 Auto-render when page loads (restore saved leaderboard)
+   ⛔ TIDAK ADA RENDER LIST DI SINI
+   Bubble feed (#4–#8) ditangani sepenuhnya oleh main.js
 ============================================================ */
+
 document.addEventListener("DOMContentLoaded", () => {
     if (window.leaderboardData && leaderboardData.length) {
         renderPodiumAndList(leaderboardData);
-
-        const rest = leaderboardData.slice(3);
-        rest.forEach(entry => {
-            addBubbleEntry(entry.address, entry.prize);
-        });
     }
 });
 
-/* Make globally callable */
+/* Export Global */
 window.renderPodiumAndList = renderPodiumAndList;
-window.addBubbleEntry      = addBubbleEntry;
