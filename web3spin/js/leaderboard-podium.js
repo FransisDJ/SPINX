@@ -82,3 +82,4 @@ window.renderLeaderboard = renderLeaderboard;
 
 // Jalankan saat halaman load
 document.addEventListener("DOMContentLoaded", renderLeaderboard);
+
