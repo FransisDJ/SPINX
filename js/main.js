@@ -48,6 +48,104 @@ try {
 const leaderboardList = document.getElementById("leaderboard-list");
 let leaderboardData   = []; // index 0 = latest winner (global list including podium)
 
+// ============================
+// ACTIVITY RANKING (4–10)
+// ============================
+let activityRanks = [];
+
+function saveActivityRanks() {
+  localStorage.setItem("activityRanks", JSON.stringify(activityRanks));
+}
+
+function loadActivityRanks() {
+  const saved = localStorage.getItem("activityRanks");
+  activityRanks = saved ? JSON.parse(saved) : [];
+}
+
+// ============================
+// PUSH ACTIVITY EVENT (SHIFT)
+// ============================
+function pushActivityRank(address, prize) {
+	
+  // 🔍 DEBUG (STEP 4 — DI SINI)
+  console.log("PUSH ACTIVITY:", address, prize);
+  
+  const safeAddress =
+    address && typeof address === "string"
+      ? address
+      : "Guest";
+
+  const safePrize =
+    prize && typeof prize === "string"
+      ? prize
+      : "-";
+
+  activityRanks.unshift({
+    address: safeAddress,
+    prize: safePrize,
+    time: Date.now()
+  });
+
+  if (activityRanks.length > 7) {
+    activityRanks.pop();
+  }
+
+  saveActivityRanks();
+  renderActivityRanks();
+}
+
+function formatTimeAgo(ts) {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+
+  if (diff < 10) return "⚡ now";
+  if (diff < 60) return `⚡ ${diff}s`;
+
+  const min = Math.floor(diff / 60);
+  if (min < 60) return `🔥 ${min}m`;
+
+  const h = Math.floor(min / 60);
+  return `🕒 ${h}h`;
+}
+
+// ============================
+// RENDER ACTIVITY RANK 4–10
+// ============================
+function renderActivityRanks() {
+  const container = document.getElementById("leaderboard-list");
+  if (!container) return;
+
+  const rows = container.querySelectorAll(".rank-row");
+  if (!rows.length) return;
+
+  activityRanks.slice(0, 7).forEach((entry, idx) => {
+    const row = rows[idx];
+    if (!row) return;
+
+const timeEl = row.querySelector(".rank-number");
+if (timeEl && entry.time) {
+  timeEl.textContent = formatTimeAgo(entry.time);
+
+  // ⛔ cegah teks turun baris & tinggi row membesar
+  timeEl.style.whiteSpace = "nowrap";
+  timeEl.style.lineHeight = "1";
+}
+
+    // 👤 TENGAH → ADDRESS
+    const nameEl = row.querySelector(".rank-name");
+    if (nameEl) {
+      const addr = entry.address || "Guest";
+      nameEl.textContent =
+        addr.slice(0, 6) + "..." + addr.slice(-4);
+    }
+
+    // 💰 KANAN → PRIZE
+    const scoreEl = row.querySelector(".rank-score");
+    if (scoreEl) {
+      scoreEl.textContent = entry.prize || "-";
+    }
+  });
+}
+
 /* ---------- Storage helpers ---------- */
 function saveLeaderboard() {
     try {
@@ -164,10 +262,10 @@ function addBubbleEntry(address, prize) {
 ====================================================== */
 window.addEventListener("DOMContentLoaded", () => {
     loadLeaderboard();
+    loadActivityRanks();   // ⬅️ INI
     ensureInitialRows();
-    // Intentionally DO NOT auto-render dummy rows.
-    // Live feed items will be added only when there's a real winner via addBubbleEntry().
 });
+
 
 /* Expose for debugging or manual calls if needed */
 window.addToLeaderboard = addToLeaderboard;
@@ -180,6 +278,21 @@ let userAddress = null;
 let spinning    = false;
 let activeIndex = 0;
 let hackMode    = false;
+let lastPrizeWon = null;
+
+// ============================
+// PRIZE → SCORE CONVERTER
+// (Dipakai untuk podium ranking)
+// ============================
+function prizeToScore(prize) {
+    if (!prize) return 0;
+
+    if (prize.includes("ETH")) return 1_000_000;
+    if (prize.includes("$")) return parseInt(prize) || 0;
+    if (prize.toUpperCase().includes("ZONK")) return 0;
+
+    return 0;
+}
 
 const prizes = ["1 ETH","ZONK","100 $","120 $","1 $","20 $"];
 
@@ -234,9 +347,11 @@ spinButton.addEventListener("click", () => {
                     spinning = false;
                     spinButton.disabled = false;
 
-                    const prizeWon = prizes[prizeIndex];
+                    lastPrizeWon = prizes[prizeIndex];
+                    const prizeWon = lastPrizeWon;
+					
                     winnerText.textContent = `🎯 Congratulations! You won ${prizeWon} 🎉`;
-                    winnerText.classList.add("show");
+					winnerText.classList.add("show");
 
                     // fade out loop
                     let loopVol = sfx.spinLoop.volume;
@@ -273,20 +388,20 @@ spinButton.addEventListener("click", () => {
                     startConfetti();
                     sfx.win.onended = () => stopConfetti();
 
-                    // Update data model
-                    addToLeaderboard(userAddress || "Guest", prizeWon);
+					// Convert prize → score
+					const score = prizeToScore(prizeWon);
 
-                    // Update podium (top 3) — leaderboard-podium.js must provide this
-                    try {
-                        if (typeof renderPodiumAndList === "function") {
-                            renderPodiumAndList(leaderboardData.filter(d => d.address && d.address !== "---"));
-                        }
-                    } catch (e) {
-                        console.warn("renderPodiumAndList error:", e);
-                    }
+					// Update leaderboard (new system)
+					updateLeaderboard(userAddress || "Guest", score);
 
-                    // Update live feed (TikTok-style)
-                    addBubbleEntry(userAddress || "Guest", prizeWon);
+					// Refresh podium & list
+					if (typeof renderLeaderboard === "function") {
+					renderLeaderboard();
+						}
+
+
+                    // Update activity ranking (4–10)
+                    pushActivityRank(userAddress || "Guest", lastPrizeWon);
                 }
             }, 200);
             return;
