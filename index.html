@@ -14,6 +14,7 @@
 </head>
 
 <body>
+
     <!-- 💥 Glitch Boom Effect -->
     <div id="glitch-boom">
         <div class="boom-text">💥 JACKPOT 💥</div>
@@ -46,6 +47,7 @@
 
             <!-- 🥇 PODIUM -->
             <div class="podium">
+
                 <div class="podium-place second">
                     <div class="medal">🥈</div>
                     <div class="name" id="podium-2">-</div>
@@ -63,13 +65,67 @@
                     <div class="name" id="podium-3">-</div>
                     <div class="prize" id="prize-3">-</div>
                 </div>
+
             </div>
 
-            <!-- 🔽 LIVE FEED RANK 4+ -->
-            <div id="leaderboard-list"></div>
+            <!-- 🔽 LIVE ACTIVITY LEADERBOARD (RANK 4–10) -->
+            <!--
+              IMPORTANT:
+              - Slot ini STATIS (DESIGN SLOT).
+              - JANGAN dihapus / render ulang via JS.
+              - main.js hanya BOLEH update:
+                .rank-name  (player / address masked)
+                .rank-score (hasil spin)
+              - leaderboard-podium.js TIDAK BOLEH
+                menyentuh #leaderboard-list.
+            -->
+            <div id="leaderboard-list">
+
+                <div class="rank-row">
+                    <span class="rank-number">4</span>
+                    <span class="rank-name">-</span>
+                    <span class="rank-score">-</span>
+                </div>
+
+                <div class="rank-row">
+                    <span class="rank-number">5</span>
+                    <span class="rank-name">-</span>
+                    <span class="rank-score">-</span>
+                </div>
+
+                <div class="rank-row">
+                    <span class="rank-number">6</span>
+                    <span class="rank-name">-</span>
+                    <span class="rank-score">-</span>
+                </div>
+
+                <div class="rank-row">
+                    <span class="rank-number">7</span>
+                    <span class="rank-name">-</span>
+                    <span class="rank-score">-</span>
+                </div>
+
+                <div class="rank-row">
+                    <span class="rank-number">8</span>
+                    <span class="rank-name">-</span>
+                    <span class="rank-score">-</span>
+                </div>
+
+                <div class="rank-row">
+                    <span class="rank-number">9</span>
+                    <span class="rank-name">-</span>
+                    <span class="rank-score">-</span>
+                </div>
+
+                <div class="rank-row">
+                    <span class="rank-number">10</span>
+                    <span class="rank-name">-</span>
+                    <span class="rank-score">-</span>
+                </div>
+
+            </div>
         </div>
     </div>
-
 
     <!-- ⚡ Marquee -->
     <div class="marquee">
@@ -88,12 +144,12 @@
     <!-- 📜 CREDIT SCROLL OVERLAY -->
     <div id="creditOverlay" class="credit-overlay">
 
-        <!-- Close Button -->
         <button id="creditCloseBtn" aria-label="Close Terms of Use">✖</button>
 
         <div class="credit-content">
             <div class="credit-block">✨ S P I N X &nbsp; P R O J E C T ✨</div>
             <div class="credit-block">Created & Developed by:<br>🧠 Fransis</div>
+
             <div class="credit-block">
                 Special Thanks:<br>
                 🌐 Open Web3 Community<br>
@@ -101,27 +157,27 @@
                 🪙 All Dreamers and Hackers
             </div>
 
-            <div class="credit-block">1. Usage Rights<br>The “SPINX” project may be used for personal, commercial, or prize events, as long as the main structure is not modified without permission.</div>
-            <div class="credit-block">2. Prize Responsibility<br>All rewards are the responsibility of the event organizer, not the project creator.</div>
-            <div class="credit-block">3. No Financial Guarantee<br>This project provides no guarantee of real rewards or payments.</div>
-            <div class="credit-block">4. Limitation of Liability<br>The creator is not responsible for misuse or legal issues arising from this project.</div>
-            <div class="credit-block">5. Credit & License<br>Please credit “SPINX Project by Fransis” when used publicly.</div>
-            <div class="credit-block">6. Changes & Termination<br>The creator may update, withdraw, or restrict usage at any time.</div>
-            <div class="credit-block">🌟 Thank you for spinning your fate<br>🌀 The Wheel Decides — Fate Never Lies.</div>
+            <div class="credit-block">1. Usage Rights<br>The “SPINX” project may be used for personal, commercial, or prize events.</div>
+            <div class="credit-block">2. Prize Responsibility<br>All rewards are the responsibility of the event organizer.</div>
+            <div class="credit-block">3. No Financial Guarantee<br>No guarantee of real rewards.</div>
+            <div class="credit-block">4. Limitation of Liability<br>No responsibility for misuse.</div>
+            <div class="credit-block">5. Credit & License<br>Please credit “SPINX Project by Fransis”.</div>
+            <div class="credit-block">6. Changes & Termination<br>Project may change anytime.</div>
+            <div class="credit-block">🌟 Thank you for spinning your fate</div>
         </div>
     </div>
 
     <!-- ============================
-         📦 CORE SCRIPTS (ORDER IMPORTANT)
+         📦 CORE SCRIPTS (ORDER FIXED)
          ============================ -->
 
     <!-- Ethers.js -->
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 
-    <!-- Leaderboard / Podium (Load BEFORE main.js!) -->
+    <!-- Leaderboard / Podium -->
     <script src="js/leaderboard-podium.js"></script>
 
-    <!-- Core -->
+    <!-- Core Logic -->
     <script src="js/main.js"></script>
 
     <!-- Hack Mode -->
