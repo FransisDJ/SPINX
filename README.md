@@ -1,2 +1,2 @@
 # SPINX
-SPINX | A high-end Web3 spin wheel game with MetaMask integration, glitch hack mode, neon cyberpunk themes, jackpot effects, podium ranking, and unlimited live leaderboard.
+SPINX | A high-end Web3 spin wheel game featuring MetaMask integration, neon cyberpunk themes, glitch hack mode, jackpot effects, podium ranking, and a live activity leaderboard.
