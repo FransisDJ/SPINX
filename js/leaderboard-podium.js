@@ -1,74 +1,112 @@
 // ===============================
 // SPINX LEADERBOARD SYSTEM (FINAL)
-// Podium 1–2–3 (score-based)
-// Rank 4–10 = SLOT ONLY (activity handled in main.js)
+// FIXED PODIUM BY PRIZE
 // ===============================
 
 // ===============================
-// STORAGE HELPERS
+// PODIUM CONFIG (FIXED ORDER)
 // ===============================
-function getLeaderboardData() {
-  const data = JSON.parse(localStorage.getItem("leaderboard")) || [];
-  return Array.isArray(data) ? data : [];
+const PODIUM_ORDER = ["1 ETH", "120 $", "100 $"];
+const PODIUM_STORAGE_KEY = "podiumSlots";
+
+// ===============================
+// 🔧 ADDRESS MASK (UI ONLY)
+// ===============================
+function maskAddress(addr) {
+  if (!addr || typeof addr !== "string") return "-";
+  if (addr.length <= 12) return addr;
+  return addr.slice(0, 6) + "…" + addr.slice(-4);
 }
 
-function saveLeaderboardData(data) {
-  localStorage.setItem("leaderboard", JSON.stringify(data));
+// ===============================
+// STORAGE HELPERS (PODIUM ONLY)
+// ===============================
+function getPodiumSlots() {
+  return JSON.parse(localStorage.getItem(PODIUM_STORAGE_KEY)) || {};
+}
+
+function savePodiumSlots(data) {
+  localStorage.setItem(PODIUM_STORAGE_KEY, JSON.stringify(data));
 }
 
 // ===============================
-// UPDATE LEADERBOARD (PODIUM ONLY)
+// UPDATE PODIUM (LOCKED BY PRIZE)
 // ===============================
-function updateLeaderboard(name, score) {
-  let players = getLeaderboardData();
+function updateLeaderboard(name, score, prize) {
+  // ❌ ignore zonk / invalid
+  if (!prize || !name) return;
 
-  let existing = players.find(p => p.name === name);
+  // ❌ only podium prizes allowed
+  if (!PODIUM_ORDER.includes(prize)) return;
 
-  if (existing) {
-    if (score > existing.score) {
-      existing.score = score;
-    }
-  } else {
-    players.push({ name, score });
-  }
+  const slots = getPodiumSlots();
 
-  players.sort((a, b) => b.score - a.score);
-  saveLeaderboardData(players);
+  // 🔒 slot already taken → DO NOTHING
+  if (slots[prize]) return;
+
+  // ✅ lock podium slot
+  slots[prize] = {
+    name: name,
+    prize: prize,
+    time: Date.now()
+  };
+
+  savePodiumSlots(slots);
   renderLeaderboard();
 }
 
 // ===============================
-// RENDER PODIUM + EMPTY SLOTS 4–10
+// PODIUM CHANGE TRACKER (GLOW)
+// ===============================
+let lastPodium = { 1: null, 2: null, 3: null };
+
+// ===============================
+// RENDER PODIUM (FIXED PRIZE)
 // ===============================
 function renderLeaderboard() {
-  const players = getLeaderboardData().sort((a, b) => b.score - a.score);
+  const slots = getPodiumSlots();
 
-  // ---------- PODIUM 1–2–3 ----------
-  const top3 = players.slice(0, 3);
+  const podiumData = PODIUM_ORDER.map(p => slots[p] || null);
 
   const p1 = document.getElementById("podium-1");
   const p2 = document.getElementById("podium-2");
   const p3 = document.getElementById("podium-3");
 
-  if (p1) p1.textContent = top3[0]?.name || "-";
-  if (p2) p2.textContent = top3[1]?.name || "-";
-  if (p3) p3.textContent = top3[2]?.name || "-";
+  const pr1 = document.getElementById("prize-1");
+  const pr2 = document.getElementById("prize-2");
+  const pr3 = document.getElementById("prize-3");
 
-  // ---------- RANK 4–10 ----------
-  // IMPORTANT:
-  // Rank 4–10 adalah SLOT STATIS dari HTML.
-  // Update rank 4–10 dilakukan sepenuhnya oleh main.js
-  // JANGAN render / reset DOM di sini.
+  // NAME (MASKED)
+  if (p1) p1.textContent = podiumData[0] ? maskAddress(podiumData[0].name) : "-";
+  if (p2) p2.textContent = podiumData[1] ? maskAddress(podiumData[1].name) : "-";
+  if (p3) p3.textContent = podiumData[2] ? maskAddress(podiumData[2].name) : "-";
+
+  // PRIZE (FIXED)
+  if (pr1) pr1.textContent = podiumData[0]?.prize || "-";
+  if (pr2) pr2.textContent = podiumData[1]?.prize || "-";
+  if (pr3) pr3.textContent = podiumData[2]?.prize || "-";
+
+  // ===============================
+  // GLOW ON CHANGE
+  // ===============================
+  const podiumMap = [
+    { pos: 1, el: p1, wrap: document.querySelector(".podium-place.first") },
+    { pos: 2, el: p2, wrap: document.querySelector(".podium-place.second") },
+    { pos: 3, el: p3, wrap: document.querySelector(".podium-place.third") }
+  ];
+
+  podiumMap.forEach(({ pos, el, wrap }) => {
+    const current = el?.textContent || null;
+    if (current && lastPodium[pos] && current !== lastPodium[pos]) {
+      wrap?.classList.add("glow");
+      setTimeout(() => wrap?.classList.remove("glow"), 600);
+    }
+    lastPodium[pos] = current;
+  });
 }
-
 
 // ==============================
 // EXPORT GLOBAL
 // ===============================
 window.updateLeaderboard = updateLeaderboard;
 window.renderLeaderboard = renderLeaderboard;
-
-// ===============================
-// INIT
-// ===============================
-document.addEventListener("DOMContentLoaded", renderLeaderboard);
