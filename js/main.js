@@ -46,7 +46,6 @@ try {
    Podium (top 3) is handled by leaderboard-podium.js (renderPodiumAndList)
 ============================================================ */
 const leaderboardList = document.getElementById("leaderboard-list");
-let leaderboardData   = []; // index 0 = latest winner (global list including podium)
 
 // ============================
 // ACTIVITY RANKING (4–10)
@@ -146,42 +145,6 @@ if (timeEl && entry.time) {
   });
 }
 
-/* ---------- Storage helpers ---------- */
-function saveLeaderboard() {
-    try {
-        localStorage.setItem("leaderboard", JSON.stringify(leaderboardData));
-    } catch (e) {
-        console.warn("Unable to save leaderboard:", e);
-    }
-}
-function loadLeaderboard() {
-    const saved = localStorage.getItem("leaderboard");
-    if (saved) {
-        try {
-            leaderboardData = JSON.parse(saved);
-        } catch (e) {
-            leaderboardData = [];
-        }
-    } else {
-        leaderboardData = [];
-    }
-}
-
-/* Ensure dummy rows exist in data model so app has stable indexing.
-   Important: we DO NOT render these dummy rows on startup to UI.
-*/
-function ensureInitialRows() {
-    // keep at least 5 items in the data model so index mapping stable,
-    // but these dummies will not be rendered to list until real winners come.
-    while (leaderboardData.length < 5) {
-        leaderboardData.push({
-            address: "---",
-            prize: "---",
-            time: ""
-        });
-    }
-}
-
 /* Add new winner to the data model (persistent) */
 function addToLeaderboard(address, prize) {
     leaderboardData.unshift({
@@ -261,9 +224,7 @@ function addBubbleEntry(address, prize) {
    STARTUP: load storage + ensure model stable (but DO NOT render dummy rows)
 ====================================================== */
 window.addEventListener("DOMContentLoaded", () => {
-    loadLeaderboard();
     loadActivityRanks();   // ⬅️ INI
-    ensureInitialRows();
 });
 
 
@@ -392,12 +353,16 @@ spinButton.addEventListener("click", () => {
 					const score = prizeToScore(prizeWon);
 
 					// Update leaderboard (new system)
-					updateLeaderboard(userAddress || "Guest", score);
+					updateLeaderboard(userAddress || "Guest", score, lastPrizeWon);
 
 					// Refresh podium & list
 					if (typeof renderLeaderboard === "function") {
 					renderLeaderboard();
 						}
+						
+					// 🔥 UNLOCK PODIUM VISUAL (INI TAMBAHANNYA)
+					document.querySelectorAll(".podium-place")
+					.forEach(p => p.classList.add("filled"));
 
 
                     // Update activity ranking (4–10)
@@ -589,3 +554,58 @@ function stopConfetti() {
 /* ============================================================
    END OF FILE
 ============================================================ */
+
+// ============================
+// 🧪 PODIUM DEBUG MODE
+// Toggle: press D
+// ============================
+(function podiumDebugMode() {
+  const panel = document.getElementById("podium-debug");
+  if (!panel) return;
+
+  function analyze() {
+    const raw = localStorage.getItem("leaderboard");
+    let parsed = [];
+    let reason = [];
+
+    if (!raw) {
+      reason.push("❌ localStorage.leaderboard = NULL");
+    } else {
+      try {
+        parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          reason.push("❌ leaderboard array EMPTY");
+        }
+      } catch (e) {
+        reason.push("❌ leaderboard JSON INVALID");
+      }
+    }
+
+    if (parsed.length) {
+      const valid = parsed.filter(p => p.score > 0 && p.prize);
+      if (!valid.length) {
+        reason.push("⚠️ DATA EXISTS but ALL REJECTED by filter:");
+        reason.push("    filter: score > 0 && prize");
+      }
+    }
+
+    panel.textContent =
+      "🧪 PODIUM DEBUG MODE\n\n" +
+      "Raw storage:\n" +
+      (raw || "null") +
+      "\n\nAnalysis:\n" +
+      (reason.length ? reason.join("\n") : "✅ Podium SHOULD render") +
+      "\n\nPress [D] to close";
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() !== "d") return;
+
+    if (panel.style.display === "none") {
+      analyze();
+      panel.style.display = "block";
+    } else {
+      panel.style.display = "none";
+    }
+  });
+})();
