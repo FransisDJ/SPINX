@@ -487,6 +487,8 @@ body.hack #glitch-terminal {
     color: #00ff88;
 
     box-shadow: none;
+	
+	transform: translateX(40px); /* ⬅️ INI */
 }
 
 .leaderboard h3 {
@@ -652,12 +654,19 @@ body.hack #glitch-terminal {
     margin-bottom: 5px;
 }
 
+/* ===== PODIUM NAME FIX ===== */
 .podium-place .name {
-    font-size: 14px;
-    color: #00ff88;
+  max-width: 140px;          /* kunci lebar */
+  margin: 0 auto;
+  text-align: center;
 
-    text-shadow: 0 0 10px #00ff88;
-    text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.5px;
 }
 
 .podium-place .prize {
@@ -1015,3 +1024,18 @@ body.hack #glitch-terminal {
     color: #0f0;
     text-shadow: 0 0 6px #0f0;
 }
+
+/* ===== Rank 4–10 Motion ===== */
+.rank-row {
+  transition:
+    transform 0.35s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Flash glow for NEW entry */
+.rank-row.flash {
+  background: rgba(0, 255, 136, 0.22);
+  box-shadow: 0 0 18px #00ff88;
+}
+
