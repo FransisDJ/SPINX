@@ -2,6 +2,11 @@
    main.js — SPINX FINAL (TikTok-style live feed)
    Struktur asli dijaga; perbaikan: leaderboard live feed (#4–#8)
 ============================================================ */
+// 🧪 DEV MODE — RESET LEADERBOARD SETIAP REFRESH
+localStorage.removeItem("podiumSlots");
+localStorage.removeItem("activityRanks");
+localStorage.removeItem("leaderboard");
+
 
 /* ============================================================
    1. ELEMENT & AUDIO SETUP
@@ -357,16 +362,22 @@ spinButton.addEventListener("click", () => {
 
 					// Refresh podium & list
 					if (typeof renderLeaderboard === "function") {
-					renderLeaderboard();
-						}
-						
+						renderLeaderboard();
+					}
+
 					// 🔥 UNLOCK PODIUM VISUAL (INI TAMBAHANNYA)
 					document.querySelectorAll(".podium-place")
-					.forEach(p => p.classList.add("filled"));
+						.forEach(p => p.classList.add("filled"));
 
+					// Update activity ranking (4–10)
+					// ⛔ Jangan masukkan podium prize ke activity feed
+					if (!["1 ETH", "120 $", "100 $"].includes(lastPrizeWon)) {
+						pushActivityRank(userAddress || "Guest", lastPrizeWon);
+					}
 
-                    // Update activity ranking (4–10)
-                    pushActivityRank(userAddress || "Guest", lastPrizeWon);
+					// 🔄 REDRAW WHEEL (fix roda kosong)
+					try { drawWheel(0); } catch (e) {}
+
                 }
             }, 200);
             return;
@@ -609,3 +620,18 @@ function stopConfetti() {
     }
   });
 })();
+
+// 🧪 DEV SHORTCUT — Reset winner data (Ctrl + Shift + R)
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "r") {
+    e.preventDefault();
+
+    localStorage.removeItem("spinx_podium");
+    localStorage.removeItem("spinx_leaderboard");
+    localStorage.removeItem("spinx_history");
+    localStorage.removeItem("spinx_initialized");
+
+    console.log("🧹 DEV RESET: podium & leaderboard cleared");
+    location.reload();
+  }
+});
