@@ -57,21 +57,32 @@ const messages = [
   "Bypassing firewalls...",
   "Protocol accepted.",
   "Ghost node active.",
-  "Darknet handshake complete."
+  "Darknet handshake complete.",
+
+  // 🔓 Fake exploit logs (illusion only)
+  "Exploit detected: timing skew +0.0021",
+  "Adjusting entropy buffer...",
+  "Override successful. Wheel unlocked."
 ];
+
 
 let glitchInterval = null;
 function startGlitchTerminal() {
   if (glitchInterval) clearInterval(glitchInterval);
+
   glitchInterval = setInterval(() => {
-    const msg = messages[Math.floor(Math.random() * messages.length)];
+    let msg;
+
+    // pesan exploit muncul lebih jarang (terasa spesial)
+    if (Math.random() < 0.35) {
+      msg = messages[Math.floor(Math.random() * messages.length)];
+    } else {
+      // 7 pesan pertama = pesan normal
+      msg = messages[Math.floor(Math.random() * 7)];
+    }
+
     glitchTerminal.textContent = `> ${msg}`;
   }, 1200);
-}
-function stopGlitchTerminal() {
-  clearInterval(glitchInterval);
-  glitchInterval = null;
-  glitchTerminal.textContent = "";
 }
 
 /* toggleHackMode: global function used by oracle.js and main.js may read hackMode flag */
@@ -124,6 +135,7 @@ function handleHackCode(e) {
   }
 }
 
+
 document.addEventListener('keydown', (e) => {
   // Theme quick keys
   if (e.key === '1') {
@@ -146,3 +158,4 @@ window.addEventListener('resize', () => {
   columns = Math.floor(matrixCanvas.width / fontSize);
   drops = Array(columns).fill(1);
 });
+
