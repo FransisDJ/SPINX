@@ -359,12 +359,15 @@ spinButton.addEventListener("click", () => {
 
 					// Update leaderboard (new system)
 					updateLeaderboard(userAddress || "Guest", score, lastPrizeWon);
-
-					// Refresh podium & list
-					if (typeof renderLeaderboard === "function") {
+					
+					// Refresh podium ONLY if podium prize
+					if (
+						["1 ETH", "120 $", "100 $"].includes(lastPrizeWon) &&
+						typeof renderLeaderboard === "function"
+					) {
 						renderLeaderboard();
 					}
-
+					
 					// 🔥 UNLOCK PODIUM VISUAL (INI TAMBAHANNYA)
 					document.querySelectorAll(".podium-place")
 						.forEach(p => p.classList.add("filled"));
