@@ -55,7 +55,7 @@ Designed to simulate **real dApp frontend behavior**, not a tutorial project.
 ```bash
 git clone https://github.com/FransisDJ/SPINX.git
 cd SPINX
-open index.html
+open index.html```
 
 ---
 
