@@ -57,6 +57,8 @@ git clone https://github.com/FransisDJ/SPINX.git
 cd SPINX
 open index.html
 
+---
+
 ## 🤖 AI Assistance Disclosure
 
 This project was built with the help of AI as a development tool for:
