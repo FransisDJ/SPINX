@@ -23,7 +23,8 @@ Designed to simulate **real dApp frontend behavior**, not a tutorial project.
 - 🦊 **Real MetaMask Mode (Source Code)**  
   Supports wallet detection, connect flow, network handling, and real dApp-style UX.
 
-> Demo mode exists for accessibility. Real Web3 functionality is implemented in the source.
+Demo mode exists for accessibility.  
+Real Web3 functionality is implemented in the source.
 
 ---
 
@@ -47,15 +48,6 @@ Designed to simulate **real dApp frontend behavior**, not a tutorial project.
 - CSS Animations  
 - Ethers.js  
 - Firebase Hosting  
-
----
-
-## 🚀 Run Locally
-
-```bash
-git clone https://github.com/FransisDJ/SPINX.git
-cd SPINX
-open index.html```
 
 ---
 
@@ -88,3 +80,11 @@ If you use or modify this project, please give credit:
 
 SPINX Project by Fransis
 
+---
+
+## 🚀 Run Locally
+
+```bash
+git clone https://github.com/FransisDJ/SPINX.git
+cd SPINX
+open index.html
