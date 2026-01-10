@@ -1,4 +1,4 @@
-# 🎡 SPINX — Interactive Web3 Spin Wheel
+# 🎡 SPINX - Interactive Web3 Spin Wheel
 
 > Interactive Web3-style frontend project with **real MetaMask integration** and advanced UI/UX.  
 > Public demo runs in Demo Mode for accessibility — full wallet support exists in the source code.
