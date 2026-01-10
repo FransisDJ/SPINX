@@ -57,25 +57,22 @@ git clone https://github.com/FransisDJ/SPINX.git
 cd SPINX
 open index.html
 
----
-
 ## 🤖 AI Assistance Disclosure
 
-This project was built with the help of AI as a **development tool** for:
+This project was built with the help of AI as a development tool for:
 - brainstorming ideas  
 - improving structure  
 - debugging assistance  
 - documentation refinement  
 
-However:  
-> **All core ideas, system design, architecture, and creative direction are my own.**  
-> AI was used as a tool, similar to documentation, Google, or StackOverflow.
+All core ideas, system design, architecture, and creative direction come from me.  
+AI was used purely as a productivity tool, similar to documentation, Google, or StackOverflow.
 
 ---
 
 ## 👤 Author
 
-**Fransis**  
+Fransis  
 Self-taught developer focused on interactive UI and Web3 frontend.  
 
 GitHub: https://github.com/FransisDJ  
@@ -85,6 +82,6 @@ GitHub: https://github.com/FransisDJ
 ## 📄 License
 
 Free for learning and inspiration.  
-If you use or modify this project, please give credit:
+If you use or modify this project, please give credit:  
 
-> **SPINX Project by Fransis**
+SPINX Project by Fransis
